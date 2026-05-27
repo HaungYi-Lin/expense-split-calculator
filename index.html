@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多人花費分攤與轉帳結算工具</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar" aria-label="主要導覽">
+      <a href="#home" class="brand" data-target="homePage">多人花費分攤工具</a>
+      <div class="nav-links">
+        <a href="#home" data-target="homePage">首頁</a>
+        <a href="#average" data-target="averagePage">簡易平均分攤</a>
+        <a href="#personal" data-target="personalPage">個人消費分攤</a>
+        <a href="#settlement" data-target="settlementPage">多人付款結算</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="homePage" class="page is-active">
+      <div class="hero">
+        <p class="eyebrow">期末網頁作品</p>
+        <h1>多人花費分攤與轉帳結算工具</h1>
+        <p class="subtitle">支援聚餐、出遊、合購、住宿、交通費、宿舍生活等多人共同花費情境。</p>
+        <p class="intro">輸入金額後可自動計算每人應付、已付差額與轉帳建議，並產生可直接貼到 LINE 群組的結算文字。</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon">均</div>
+          <h2>簡易平均分攤</h2>
+          <p>適合一人先付款，其他人平均分攤的聚餐、飲料或合購情境。</p>
+          <p class="use-case">適用情境：一般聚餐、團購飲料、共同購買用品。</p>
+          <button type="button" class="btn primary" data-show-page="averagePage">開始平均分攤</button>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">個</div>
+          <h2>個人消費分攤</h2>
+          <p>適合每個人點的餐點金額不同，並需要計算服務費與折扣的情境。</p>
+          <p class="use-case">適用情境：個人餐點、不同消費額、一起結帳後拆帳。</p>
+          <button type="button" class="btn primary" data-show-page="personalPage">開始個人分攤</button>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">結</div>
+          <h2>多人付款結算</h2>
+          <p>適合出遊或合購時，多人先後代墊不同費用，最後統一結算誰要給誰多少錢。</p>
+          <p class="use-case">適用情境：住宿、油錢、門票、餐費由不同人先付款。</p>
+          <button type="button" class="btn primary" data-show-page="settlementPage">開始多人結算</button>
+        </article>
+      </div>
+
+      <section class="card flow-card">
+        <h2>使用流程</h2>
+        <ol class="steps">
+          <li>選擇分攤模式</li>
+          <li>輸入金額資料</li>
+          <li>系統自動計算差額</li>
+          <li>產生最少轉帳次數建議</li>
+          <li>複製結果到 LINE 群組</li>
+        </ol>
+      </section>
+    </section>
+
+    <section id="averagePage" class="page">
+      <button type="button" class="back-btn" data-show-page="homePage">← 返回首頁</button>
+      <div class="page-title">
+        <h1>簡易平均分攤</h1>
+        <p>適合一個人先付款，其他人平均分攤的情境。</p>
+      </div>
+
+      <section class="card">
+        <h2>輸入資料</h2>
+        <form id="averageForm" class="form-grid">
+          <label>
+            總金額（元）
+            <input type="number" id="avgTotal" min="0" step="0.01" placeholder="例如 1200" required>
+          </label>
+          <label>
+            人數
+            <input type="number" id="avgPeople" min="2" step="1" placeholder="例如 4" required>
+          </label>
+          <label>
+            服務費百分比（%）
+            <input type="number" id="avgService" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            折扣金額（元）
+            <input type="number" id="avgDiscount" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            付款者名稱
+            <input type="text" id="avgPayer" value="付款者" placeholder="例如 A">
+          </label>
+          <label>
+            金額處理方式
+            <select id="avgRounding">
+              <option value="round">四捨五入到整數</option>
+              <option value="ceil">無條件進位到整數</option>
+              <option value="floor">無條件捨去到整數</option>
+              <option value="decimal">保留小數點兩位</option>
+            </select>
+          </label>
+        </form>
+        <p id="avgMessage" class="message" aria-live="polite"></p>
+        <div class="actions">
+          <button type="button" class="btn primary" id="avgCalculate">開始計算</button>
+          <button type="button" class="btn secondary" id="avgExample">填入範例</button>
+          <button type="button" class="btn ghost" id="avgClear">清除資料</button>
+          <button type="button" class="btn success" id="avgCopy">複製結算文字</button>
+        </div>
+      </section>
+
+      <section id="avgResult" class="result-area"></section>
+    </section>
+
+    <section id="personalPage" class="page">
+      <button type="button" class="back-btn" data-show-page="homePage">← 返回首頁</button>
+      <div class="page-title">
+        <h1>個人消費分攤</h1>
+        <p>適合每個人消費金額不同，但需要一起結帳或統一結算的情境。</p>
+      </div>
+
+      <section class="card">
+        <h2>成員資料</h2>
+        <div id="personalMembers" class="member-list"></div>
+        <div class="actions compact">
+          <button type="button" class="btn secondary" id="personalAdd">新增成員</button>
+        </div>
+
+        <h2 class="section-gap">共同設定</h2>
+        <form id="personalForm" class="form-grid">
+          <label>
+            服務費百分比（%）
+            <input type="number" id="personalService" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            折扣金額（元）
+            <input type="number" id="personalDiscount" min="0" step="0.01" value="0">
+          </label>
+          <label>
+            金額處理方式
+            <select id="personalRounding">
+              <option value="round">四捨五入到整數</option>
+              <option value="ceil">無條件進位到整數</option>
+              <option value="floor">無條件捨去到整數</option>
+              <option value="decimal">保留小數點兩位</option>
+            </select>
+          </label>
+        </form>
+        <p id="personalMessage" class="message" aria-live="polite"></p>
+        <div class="actions">
+          <button type="button" class="btn primary" id="personalCalculate">開始計算</button>
+          <button type="button" class="btn secondary" id="personalExample">填入範例</button>
+          <button type="button" class="btn ghost" id="personalClear">清除資料</button>
+          <button type="button" class="btn success" id="personalCopy">複製結算文字</button>
+        </div>
+      </section>
+
+      <section id="personalResult" class="result-area"></section>
+    </section>
+
+    <section id="settlementPage" class="page">
+      <button type="button" class="back-btn" data-show-page="homePage">← 返回首頁</button>
+      <div class="page-title">
+        <h1>多人付款結算</h1>
+        <p>適合多人都有先付款、代墊費用，最後要統一算誰要給誰多少錢的情境。</p>
+      </div>
+
+      <section class="card">
+        <h2>成員資料</h2>
+        <div id="settlementMembers" class="member-list"></div>
+        <p id="settlementMessage" class="message" aria-live="polite"></p>
+        <div class="actions">
+          <button type="button" class="btn secondary" id="settlementAdd">新增成員</button>
+          <button type="button" class="btn primary" id="settlementCalculate">開始結算</button>
+          <button type="button" class="btn secondary" id="settlementExample">填入範例</button>
+          <button type="button" class="btn ghost" id="settlementClear">清除資料</button>
+          <button type="button" class="btn success" id="settlementCopy">複製結算文字</button>
+        </div>
+      </section>
+
+      <section id="settlementResult" class="result-area"></section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>學生期末作品｜純前端 HTML、CSS、JavaScript 製作</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
